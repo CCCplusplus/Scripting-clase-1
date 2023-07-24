@@ -2,22 +2,27 @@
 #include "Scene.h"
 #include "Player.h"
 #include "GameEngine.h"
+#include "Player.h"
 class GameScene : public Scene
 {
 private:
 	//Player Jugador;
 
-	GameEngine States;
+	//GameEngine States;
 
 	sf::RectangleShape _rect;
+
+	Player* _player;
 
 protected:
 
 	void InitKeys();
+	void InitPlayer();
 
 
 public:
-	GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys);
+	GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,
+		std::stack<Scene*>* _scenes);
 
 	virtual ~GameScene();
 

@@ -12,6 +12,8 @@
 #include <string>
 #include <math.h>
 #include <vector>
+#include <stdio.h>
+#include <stack>
 
 
 //SFML

@@ -19,7 +19,8 @@ protected:
 	virtual void InitKeys() = 0;
 
 public:
-	Scene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys);
+	Scene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,
+		std::stack<Scene*>* _scenes);
 
 	virtual ~Scene();
 
@@ -32,6 +33,8 @@ public:
 	virtual void UpdateMousePos();
 
 	const bool GetQuit();
+
+	std::stack<Scene*>* scene;
 
 	bool quit;
 

@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "Scene.h"
 
-Scene::Scene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys)
+
+
+Scene::Scene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes)
 {
 	_window = _target;
 	supportedKeys = _supportKeys;
-	
+	scene = _scenes;
+
 	quit = false;
 }
 

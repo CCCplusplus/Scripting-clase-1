@@ -3,9 +3,28 @@ class Entity
 {
 private:
 
-public:
-	virtual void Update(sf::RenderWindow*);
+protected:
+	float moveSpeed;
 
-	virtual void Render(sf::RenderWindow*);
+	sf::RectangleShape rect;
+
+public:
+	Entity();
+
+	~Entity();
+
+	void InitSpirte();
+
+	void InitMovement();
+
+	void InitHitBox();
+
+	virtual void SetPosition(const float x, const float y);
+
+	virtual void Move(const float x, const float y, const float& dt);
+
+	virtual void Update(const float& dt);
+
+	void Render(sf::RenderTarget* _target);
 };
 

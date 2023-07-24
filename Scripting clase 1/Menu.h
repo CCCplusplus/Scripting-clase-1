@@ -1,18 +1,25 @@
 #pragma once
 #include "Scene.h"
 #include "GameEngine.h"
+#include "Button.h"
 class Menu : public Scene
 {
 private:
 	sf::RectangleShape _rect;
+	sf::Font _font;
 
-	GameEngine States;
+	GUI::Button* button;
+
+	void InitFont();
+	void InitButton();
+
 
 protected:
 	void InitKeys();
 
 public:
-	Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys);
+	Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,
+		std::stack<Scene*>* _scenes);
 
 	virtual ~Menu();
 

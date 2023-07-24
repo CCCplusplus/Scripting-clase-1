@@ -3,6 +3,29 @@
 
 GUI::Button::Button(float x, float y, float width, float height, sf::Font* _font, std::string _text, unsigned _fontSize, sf::Color _idleText, sf::Color _hoverText, sf::Color _pressText, sf::Color _idleColor, sf::Color _hoverColor, sf::Color _pressColor, short unsigned id)
 {
+    buttonState = BTN_IDDLE;
+    this->id = id;
+
+    rect.setPosition(x, y);
+    rect.setSize(sf::Vector2f(width, height));
+
+    this->idleText = _idleText;
+    this->hoverText = _hoverText;
+    this->pressText = _pressText;
+
+    this->font = _font;
+    text.setFont(*font);
+    text.setString(_text);
+    text.setFillColor(idleText);
+    text.setCharacterSize(_fontSize);
+
+    text.setPosition(sf::Vector2f(x*1.5, y*1.5));
+
+    this->idleColor = _idleColor;
+    this->hoverColor = _hoverColor;
+    this->pressColor = _pressColor;
+
+    rect.setFillColor(idleColor);
 }
 
 GUI::Button::~Button()
@@ -36,6 +59,8 @@ void GUI::Button::Update(const sf::Vector2f mousePos)
 
 void GUI::Button::Render(sf::RenderTarget* _target)
 {
+    _target->draw(rect);
+    _target->draw(text);
 }
 
 const bool GUI::Button::GetButtonPress()

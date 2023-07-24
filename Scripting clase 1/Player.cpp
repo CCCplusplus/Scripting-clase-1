@@ -1,12 +1,18 @@
 #include "pch.h"
 #include "Player.h"
 
-void Player::Update(sf::RenderWindow*)
+Player::Player(const float X, const float Y)
 {
-	std::cout << "++ in x baby!" << "\n";
+	InitSpirte();
+
+	SetPosition(X, Y);
 }
 
-void Player::Render(sf::RenderWindow*)
+Player::~Player()
 {
-	std::cout << "Draw me like one of your french girls" << "\n";
+}
+
+void Player::Update(const float& dt)
+{
+
 }

@@ -10,12 +10,11 @@ private:
 	sf::Event _event;
 	std::string header;
 	bool fullscreen;
-	Player jugador;
 	sf::Clock deltaClock;
 	float deltaTime;
 	std::map<std::string, int> supportedKeys;  //mapa para guardar valores de keys, sirven como vectores
 
-	Scene* game;
+	std::stack<Scene*> scenes;
 
 	void InitKeys();
 	void InitWindow();
@@ -27,8 +26,6 @@ public:
 	~GameEngine();
 
 	const bool GetWindowOpen();
-
-	int state = 1;
 
 	void Update();
 	void Render();

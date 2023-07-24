@@ -3,11 +3,12 @@
 class Player : public Entity
 {
 private:
-	sf::RectangleShape _rect;
+	
 
 public:
-	void Update(sf::RenderWindow*) override;
+	Player(const float X, const float Y);
+	virtual ~Player();
 
-	void Render(sf::RenderWindow*) override;
+	virtual void Update(const float& dt);	
 };
 

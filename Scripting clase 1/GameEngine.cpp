@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameEngine.h"
 #include "GameScene.h"
+#include "Menu.h"
 
 void GameEngine::InitKeys()
 {
@@ -32,12 +33,7 @@ void GameEngine::InitWindow()
 
 void GameEngine::InitScene()
 {
-	if (state == 1)
-		game = new GameScene(_window, &supportedKeys);
-	else if (state == 2)
-		game = new GameScene(_window, &supportedKeys);
-	else if (state == 3)
-		game = new GameScene(_window, &supportedKeys);
+	scenes.push(new Menu(_window, &supportedKeys, &scenes));
 }
 
 GameEngine::GameEngine()
@@ -59,23 +55,33 @@ const bool GameEngine::GetWindowOpen()
 
 void GameEngine::Update()
 {
-	jugador.Update(_window);
+	//jugador.Update(_window);
 
-
-	game->Update(deltaTime);
-	if (game->GetQuit())
+	if (!scenes.empty()) 
 	{
-		delete game;
+		scenes.top()->Update(deltaTime);
+		if (scenes.top()->GetQuit()) 
+		{
+			scenes.top()->EndState();
+			delete scenes.top();
+			scenes.pop();
+		}
+	}
+	else 
+	{
+		_window->close();
 	}
 }
 
 void GameEngine::Render()
 {
-	jugador.Render(_window);
 
 	_window->clear();
+	//jugador.Render(_window);
 
-	game->Render(_window);
+	if (!scenes.empty()) {
+		scenes.top()->Render(_window);
+	}
 
 	_window->display();
 }
