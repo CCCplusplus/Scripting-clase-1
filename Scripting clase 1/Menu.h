@@ -8,7 +8,9 @@ private:
 	sf::RectangleShape _rect;
 	sf::Font _font;
 
-	GUI::Button* button;
+	GUI::Button* button1;
+	GUI::Button* button2;
+	GUI::Button* button3;
 
 	void InitFont();
 	void InitButton();

@@ -9,9 +9,17 @@ void Menu::InitFont()
 
 void Menu::InitButton()
 {
-	button = new GUI::Button(100, 100, 350, 250, &_font,
+	button1 = new GUI::Button(100, 100, 350, 250, &_font,
 		"New Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
 		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
+	button2 = new GUI::Button(500, 100, 350, 250, &_font,
+		"Newer Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
+
+	button3 = new GUI::Button(900, 100, 350, 250, &_font,
+		"Newest Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
+
 }
 
 void Menu::InitKeys()
@@ -69,5 +77,7 @@ void Menu::Update(const float& dt)
 void Menu::Render(sf::RenderTarget* _target)
 {
 	_target->draw(_rect);
-	button->Render(_target);
+	button1->Render(_target);
+	button2->Render(_target);
+	button3->Render(_target);
 }

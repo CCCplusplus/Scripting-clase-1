@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Editor.h"
-#include "GameScene.h"
+#include "Menu.h"
 
 void Editor::InitKeys()
 {
@@ -48,7 +48,7 @@ void Editor::Update(const float& dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("CHANGEG"))))
 	{
-		scene->push(new GameScene(_window, supportedKeys, scene));
+		scene->push(new Menu(_window, supportedKeys, scene));
 	}
 }
 

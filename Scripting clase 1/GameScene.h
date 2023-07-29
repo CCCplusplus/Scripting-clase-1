@@ -3,21 +3,21 @@
 #include "Player.h"
 #include "GameEngine.h"
 #include "Player.h"
+#include "Enemy.h"
 class GameScene : public Scene
 {
 private:
-	//Player Jugador;
-
-	//GameEngine States;
-
 	sf::RectangleShape _rect;
 
 	Player* _player;
+
+	Enemy* _Baddie;
 
 protected:
 
 	void InitKeys();
 	void InitPlayer();
+	void InitEnemy();
 
 
 public:

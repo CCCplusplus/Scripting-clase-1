@@ -3,6 +3,8 @@
 class Player : public Entity
 {
 private:
+
+protected:
 	
 
 public:

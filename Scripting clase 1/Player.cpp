@@ -3,7 +3,7 @@
 
 Player::Player(const float X, const float Y)
 {
-	InitSpirte();
+	InitSpirte(100, 100, sf::Color::Red);
 
 	SetPosition(X, Y);
 }
