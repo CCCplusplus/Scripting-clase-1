@@ -10,6 +10,7 @@ void Editor::InitKeys()
 	editorKeys["E-DOWN"] = supportedKeys->at("S");
 	editorKeys["MURDERIZE"] = supportedKeys->at("Escape");
 	editorKeys["CHANGEG"] = supportedKeys->at("C");
+	editorKeys["Pausation"] = supportedKeys->at("E");
 }
 
 Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes):
@@ -49,6 +50,10 @@ void Editor::Update(const float& dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("CHANGEG"))))
 	{
 		scene->push(new Menu(_window, supportedKeys, scene));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("Pausation"))))
+	{
+		std::cout << "You do nothing! You lose!" << "\n";
 	}
 }
 

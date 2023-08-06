@@ -8,8 +8,9 @@ GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _sup
 	InitKeys();
 	InitPlayer();
 	InitEnemy();
-	_rect.setSize(sf::Vector2f(_window->getSize()));
-	_rect.setFillColor(sf::Color::Blue);
+	InitBG();
+	InitBGTexture();
+	isPaused = false;
 }
 
 GameScene::~GameScene()
@@ -25,36 +26,60 @@ void GameScene::InitKeys()
 	newKeys["MOVE_DOWN"] = supportedKeys->at("S");
 	newKeys["CLOSE"] = supportedKeys->at("Escape");
 	newKeys["CHANGEM"] = supportedKeys->at("C");
+	newKeys["PAUSE"] = supportedKeys->at("E");
 }
 
 void GameScene::InitPlayer()
 {
-	_player = new Player(10, 10);
+	PlayerI.loadFromFile("Player.png");
+	_player = new Player(PlayerI, 10, 10);
 }
 
 void GameScene::InitEnemy()
 {
-	_Baddie = new Enemy(200, 200, _player);
+	EnemyI.loadFromFile("Enemy.png");
+	_Baddie = new Enemy(EnemyI, 200, 200, _player);
+}
+
+void GameScene::InitBG()
+{
+	_rect.setSize(sf::Vector2f(_window->getSize()));
+	_rect.setFillColor(sf::Color::Blue);
+}
+
+void GameScene::InitBGTexture()
+{
+	BackgroundI.loadFromFile("GameSceneBG.jpg");
+	_rect.setTexture(&BackgroundI);
 }
 
 void GameScene::Update(const float& dt)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT")))) 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("PAUSE"))))
 	{
-		_player->Move(-1, 0, dt, _window->getSize());
+		isPaused = !isPaused; // Toggle the pause state.
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_RIGHT"))))
-	{
-		_player->Move(1, 0, dt, _window->getSize());
+	if (!isPaused) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT"))))
+		{
+			_player->Move(-1, 0, dt, _window->getSize());
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_RIGHT"))))
+		{
+			_player->Move(1, 0, dt, _window->getSize());
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_UP"))))
+		{
+			_player->Move(0, -1, dt, _window->getSize());
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_DOWN"))))
+		{
+			_player->Move(0, 1, dt, _window->getSize());
+		}
+
+		_Baddie->Update(dt, _window->getSize());
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_UP"))))
-	{
-		_player->Move(0, -1, dt, _window->getSize());
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_DOWN"))))
-	{
-		_player->Move(0, 1, dt, _window->getSize());
-	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CLOSE"))))
 	{
 		EndState();
@@ -63,8 +88,6 @@ void GameScene::Update(const float& dt)
 	{
 		scene->push(new Editor(_window, supportedKeys, scene));
 	}
-
-	_Baddie->Update(dt, _window->getSize());
 }
 
 void GameScene::Render(sf::RenderTarget* _target)

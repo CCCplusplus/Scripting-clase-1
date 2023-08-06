@@ -7,13 +7,15 @@ class Menu : public Scene
 private:
 	sf::RectangleShape _rect;
 	sf::Font _font;
+	sf::Texture BackgroundI;
 
-	GUI::Button* button1;
-	GUI::Button* button2;
-	GUI::Button* button3;
+	std::map<std::string, GUI::Button*> buttons;
 
+	void InitBackground();
 	void InitFont();
 	void InitButton();
+	void InitBGTexture();
+
 
 
 protected:
@@ -26,6 +28,10 @@ public:
 	virtual ~Menu();
 
 	void Update(const float& dt);
+
+	void UpdateButtons(const float& dt);
+
+
 
 	void Render(sf::RenderTarget* _target);
 };

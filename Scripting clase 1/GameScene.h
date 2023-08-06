@@ -8,6 +8,9 @@ class GameScene : public Scene
 {
 private:
 	sf::RectangleShape _rect;
+	sf::Texture BackgroundI;
+	sf::Texture PlayerI;
+	sf::Texture EnemyI;
 
 	Player* _player;
 
@@ -18,6 +21,8 @@ protected:
 	void InitKeys();
 	void InitPlayer();
 	void InitEnemy();
+	void InitBG();
+	void InitBGTexture();
 
 
 public:

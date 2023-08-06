@@ -7,9 +7,10 @@ private:
 	Player* _player;
 
 protected:
+	sf::Texture EnemyT;
 
 public:
-	Enemy(const float x, const float y, Player* player);
+	Enemy(sf::Texture& _texture, const float x, const float y, Player* player);
 
 	virtual ~Enemy();
 

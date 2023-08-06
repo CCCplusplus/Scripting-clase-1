@@ -7,13 +7,14 @@ protected:
 	float moveSpeed;
 
 	sf::RectangleShape rect;
+	sf::Sprite _sprite;
 
 public:
 	Entity();
 
 	~Entity();
 
-	void InitSpirte(float x, float y, sf::Color color);
+	void InitSpirte(sf::Texture& _texture);
 
 	void InitMovement();
 

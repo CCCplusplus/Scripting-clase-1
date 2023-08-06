@@ -37,13 +37,13 @@ GUI::Button::~Button()
 
 const std::string GUI::Button::GetText()
 {
-    return std::string();
+    return this->text.getString();
 }
 
 const short unsigned& GUI::Button::GetID()
 {
     // TODO: insert return statement here
-    return 0;
+    return id;
 }
 
 void GUI::Button::SetText(const std::string text)
@@ -56,8 +56,34 @@ void GUI::Button::SetID(const short unsigned id)
 
 void GUI::Button::Update(const sf::Vector2f mousePos)
 {
-    //TODO:
-    //definir los estados que debe de tener para idle, hover y press
+    buttonState = BTN_IDDLE;
+    if (rect.getGlobalBounds().contains(mousePos)) 
+    {
+        buttonState = BTN_HOVER;
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+        {
+            buttonState = BTS_PRESS;
+        }
+    }
+
+    switch (buttonState)
+    {case BTN_IDDLE:
+        rect.setFillColor(idleColor);
+        text.setFillColor(idleText);
+        break;
+    case BTN_HOVER:
+        rect.setFillColor(hoverColor);
+        text.setFillColor(hoverText);
+        break;
+    case BTS_PRESS:
+        rect.setFillColor(pressColor);
+        text.setFillColor(pressText);
+        break;
+    default:
+        rect.setFillColor(sf::Color::Yellow);
+        text.setFillColor(sf::Color::Yellow);
+        break;
+    }
 }
 
 void GUI::Button::Render(sf::RenderTarget* _target)
@@ -68,5 +94,8 @@ void GUI::Button::Render(sf::RenderTarget* _target)
 
 const bool GUI::Button::GetButtonPress()
 {
+    if (buttonState == BTS_PRESS)
+        return true;
+
     return false;
 }

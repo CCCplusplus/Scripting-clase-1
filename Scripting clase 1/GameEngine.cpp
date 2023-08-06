@@ -11,6 +11,7 @@ void GameEngine::InitKeys()
 	supportedKeys["S"] = 18;
 	supportedKeys["W"] = 22;
 	supportedKeys["C"] = 2;
+	supportedKeys["E"] = 4;
 }
 
 void GameEngine::InitWindow()

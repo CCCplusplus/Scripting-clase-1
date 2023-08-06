@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "Menu.h"
 #include "GameScene.h"
+#include "Editor.h"
+
+void Menu::InitBackground()
+{
+	_rect.setSize(sf::Vector2f(_window->getSize()));
+	_rect.setFillColor(sf::Color::White);
+}
 
 void Menu::InitFont()
 {
@@ -9,17 +16,23 @@ void Menu::InitFont()
 
 void Menu::InitButton()
 {
-	button1 = new GUI::Button(100, 100, 350, 250, &_font,
+	buttons ["New Game"] = new GUI::Button(100, 100, 350, 250, &_font,
 		"New Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
-		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
-	button2 = new GUI::Button(500, 100, 350, 250, &_font,
+		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, -1);
+	buttons ["Settings"] = new GUI::Button(500, 100, 350, 250, &_font,
 		"Newer Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
-		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
+		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 1);
 
-	button3 = new GUI::Button(900, 100, 350, 250, &_font,
+	buttons ["Quit"] = new GUI::Button(900, 100, 350, 250, &_font,
 		"Newest Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
-		sf::Color::Red, sf::Color::Blue, sf::Color::Green);
+		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 2);
 
+}
+
+void Menu::InitBGTexture()
+{
+	BackgroundI.loadFromFile("MainMenuBG.jpg");
+	_rect.setTexture(&BackgroundI);
 }
 
 void Menu::InitKeys()
@@ -30,7 +43,10 @@ void Menu::InitKeys()
 	menuKeys["ONEDOWN"] = supportedKeys->at("S");
 	menuKeys["DIE"] = supportedKeys->at("Escape");
 	menuKeys["CHANGEE"] = supportedKeys->at("C");
+	menuKeys["PAUSITA"] = supportedKeys->at("E");
 }
+
+
 
 Menu::Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes): 
 	Scene(_target, _supportKeys,_scenes)
@@ -38,12 +54,16 @@ Menu::Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, 
 	InitKeys();
 	InitFont();
 	InitButton();
-	_rect.setSize(sf::Vector2f(_window->getSize()));
-	_rect.setFillColor(sf::Color::Green);
+	InitBackground();
+	InitBGTexture();
 }
 
 Menu::~Menu()
 {
+	for (auto b : buttons)
+	{
+		delete b.second;
+	}
 }
 
 void Menu::Update(const float& dt)
@@ -72,12 +92,43 @@ void Menu::Update(const float& dt)
 	{
 		scene->push(new GameScene(_window, supportedKeys, scene));
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("PAUSITA"))))
+	{
+		std::cout << "You do nothing! You lose!" << "\n";
+	}
+	UpdateMousePos();
+	UpdateButtons(dt);
+	
 }
+
+void Menu::UpdateButtons(const float& dt)
+{
+	for (auto b : buttons)
+	{
+		b.second->Update(mousePosView);
+	}
+	if (buttons["New Game"]->GetButtonPress()) 
+	{
+		scene->push(new GameScene(_window, supportedKeys, scene));
+	}
+	if (buttons["Settings"]->GetButtonPress())
+	{
+		scene->push(new Editor(_window, supportedKeys, scene));
+	}
+	if (buttons["Quit"]->GetButtonPress())
+	{
+		EndState();
+	}
+	
+}
+
+
 
 void Menu::Render(sf::RenderTarget* _target)
 {
 	_target->draw(_rect);
-	button1->Render(_target);
-	button2->Render(_target);
-	button3->Render(_target);
+	for (auto b : buttons) 
+	{
+		b.second->Render(_target);
+	}
 }

@@ -38,6 +38,8 @@ public:
 
 	bool quit;
 
+	bool isPaused;
+
 	//update es para tiempo, Render para dibujo
 	//Llamar a las dos funciones en el render y el update de GameEngine
 };
