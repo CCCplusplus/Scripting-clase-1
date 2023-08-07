@@ -57,7 +57,7 @@ void GameScene::Update(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("PAUSE"))))
 	{
-		isPaused = !isPaused; // Toggle the pause state.
+		isPaused = !isPaused;
 	}
 	if (!isPaused) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT"))))

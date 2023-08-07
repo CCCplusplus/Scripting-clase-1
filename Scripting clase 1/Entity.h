@@ -6,7 +6,7 @@ private:
 protected:
 	float moveSpeed;
 
-	sf::RectangleShape rect;
+	sf::RectangleShape _hitbox;
 	sf::Sprite _sprite;
 
 public:
@@ -18,7 +18,7 @@ public:
 
 	void InitMovement();
 
-	void InitHitBox();
+	void InitHitBox(sf::Texture& imagensize);
 
 	virtual void SetPosition(const float x, const float y);
 

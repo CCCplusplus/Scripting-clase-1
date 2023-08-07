@@ -6,6 +6,8 @@ Player::Player(sf::Texture& _texture, const float X, const float Y)
 	InitSpirte(_texture);
 
 	SetPosition(X, Y);
+
+	InitHitBox(_texture);
 }
 
 
