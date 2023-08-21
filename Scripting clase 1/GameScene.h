@@ -24,10 +24,13 @@ protected:
 	void InitBG();
 	void InitBGTexture();
 
+	void InitLua();
+
+	void RegisterCPPFunctions(lua_State* L);
 
 public:
 	GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,
-		std::stack<Scene*>* _scenes);
+		std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts);
 
 	virtual ~GameScene();
 

@@ -34,8 +34,9 @@ void GameEngine::InitWindow()
 
 void GameEngine::InitScene()
 {
-	scenes.push(new Menu(_window, &supportedKeys, &scenes));
+	scenes.push(new Menu(_window, &supportedKeys, &scenes, &luaScripts));
 }
+
 
 GameEngine::GameEngine()
 {
@@ -66,6 +67,9 @@ void GameEngine::Update()
 			scenes.top()->EndState();
 			delete scenes.top();
 			scenes.pop();
+
+			delete luaScripts.top();
+			luaScripts.pop();
 		}
 	}
 	else 

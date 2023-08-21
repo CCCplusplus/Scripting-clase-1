@@ -7,7 +7,7 @@ Player::Player(sf::Texture& _texture, const float X, const float Y)
 
 	SetPosition(X, Y);
 
-	InitHitBox(_texture);
+	moveSpeed = 200;
 }
 
 

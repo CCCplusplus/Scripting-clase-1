@@ -15,6 +15,7 @@ private:
 	std::map<std::string, int> supportedKeys;  //mapa para guardar valores de keys, sirven como vectores
 
 	std::stack<Scene*> scenes;
+	std::stack<LuaReader*> luaScripts;
 
 	void InitKeys();
 	void InitWindow();

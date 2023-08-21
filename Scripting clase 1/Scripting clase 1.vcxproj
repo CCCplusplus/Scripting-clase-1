@@ -147,6 +147,8 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Hitbox.cpp" />
+    <ClCompile Include="LuaReader.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -165,10 +167,21 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Hitbox.h" />
+    <ClInclude Include="LuaReader.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EditorSceneLua.lua" />
+    <None Include="Enemy.lua" />
+    <None Include="Entity.lua" />
+    <None Include="GameSceneLua.lua" />
+    <None Include="MainMenuSceneLua.lua" />
+    <None Include="Player.lua" />
+    <None Include="scenes.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

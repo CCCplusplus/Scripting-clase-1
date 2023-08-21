@@ -1,13 +1,14 @@
 #pragma once
+#include "Hitbox.h"
 class Entity
 {
 private:
 
 protected:
 	float moveSpeed;
-
-	sf::RectangleShape _hitbox;
+	int hp;
 	sf::Sprite _sprite;
+	Hitbox _hitboxInstance;
 
 public:
 	Entity();
@@ -18,7 +19,6 @@ public:
 
 	void InitMovement();
 
-	void InitHitBox(sf::Texture& imagensize);
 
 	virtual void SetPosition(const float x, const float y);
 

@@ -35,6 +35,19 @@ void Menu::InitBGTexture()
 	_rect.setTexture(&BackgroundI);
 }
 
+void Menu::InitLua()
+{
+	_luaReader = new LuaReader("MainMenuSceneLua.lua");
+	lua_pushlightuserdata(this->_luaReader->getLuaState(), this);
+	lua_setglobal(this->_luaReader->getLuaState(), "MENU");
+	this->RegisterCPPFunctions(_luaReader->getLuaState());
+	this->_luaReader->LoadFile();
+}
+
+void Menu::RegisterCPPFunctions(lua_State* L)
+{
+}
+
 void Menu::InitKeys()
 {
 	menuKeys["ONETOTHELEFT"] = supportedKeys->at("A");
@@ -48,14 +61,15 @@ void Menu::InitKeys()
 
 
 
-Menu::Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes): 
-	Scene(_target, _supportKeys,_scenes)
+Menu::Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts)
+	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
 	InitKeys();
 	InitFont();
 	InitButton();
 	InitBackground();
 	InitBGTexture();
+	InitLua();
 }
 
 Menu::~Menu()
@@ -90,7 +104,7 @@ void Menu::Update(const float& dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("CHANGEE"))))
 	{
-		scene->push(new GameScene(_window, supportedKeys, scene));
+		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("PAUSITA"))))
 	{
@@ -98,7 +112,7 @@ void Menu::Update(const float& dt)
 	}
 	UpdateMousePos();
 	UpdateButtons(dt);
-	
+	ExecuteLuaUpdate();
 }
 
 void Menu::UpdateButtons(const float& dt)
@@ -109,11 +123,11 @@ void Menu::UpdateButtons(const float& dt)
 	}
 	if (buttons["New Game"]->GetButtonPress()) 
 	{
-		scene->push(new GameScene(_window, supportedKeys, scene));
+		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
 	}
 	if (buttons["Settings"]->GetButtonPress())
 	{
-		scene->push(new Editor(_window, supportedKeys, scene));
+		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
 	}
 	if (buttons["Quit"]->GetButtonPress())
 	{

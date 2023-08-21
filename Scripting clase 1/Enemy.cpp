@@ -7,9 +7,11 @@ Enemy::Enemy(sf::Texture& _texture, const float X, const float Y, Player* player
 
 	SetPosition(X, Y);
 
+	moveSpeed = 150;
+
 	_player = player; //guarda el apuntador al jugador
 
-	InitHitBox(_texture);
+	
 }
 
 Enemy::~Enemy()
@@ -26,7 +28,7 @@ void Enemy::MovetoObjective(const float& dt, sf::Vector2u windowSize)
 {
 	//calculamos a donde tenemos que ir 
 	sf::Vector2f direction = _player->GetPosition() - GetPosition();
-	float Limit = 180;
+	float Limit = 400;
 	float length = sqrt(direction.x * direction.x + direction.y * direction.y);
 
     //se supone que esto es para "normalizar"

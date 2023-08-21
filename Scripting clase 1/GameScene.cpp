@@ -2,8 +2,8 @@
 #include "GameScene.h"
 #include "Editor.h"
 
-GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes):
-	Scene(_target,_supportKeys,_scenes)
+GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts)
+	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
 	InitKeys();
 	InitPlayer();
@@ -11,6 +11,7 @@ GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _sup
 	InitBG();
 	InitBGTexture();
 	isPaused = false;
+	InitLua();
 }
 
 GameScene::~GameScene()
@@ -38,7 +39,7 @@ void GameScene::InitPlayer()
 void GameScene::InitEnemy()
 {
 	EnemyI.loadFromFile("Enemy.png");
-	_Baddie = new Enemy(EnemyI, 200, 200, _player);
+	_Baddie = new Enemy(EnemyI, 400, 400, _player);
 }
 
 void GameScene::InitBG()
@@ -51,6 +52,20 @@ void GameScene::InitBGTexture()
 {
 	BackgroundI.loadFromFile("GameSceneBG.jpg");
 	_rect.setTexture(&BackgroundI);
+}
+
+void GameScene::InitLua()
+{
+	_luaReader = new LuaReader("GameSceneLua.lua");
+	lua_pushlightuserdata(this->_luaReader->getLuaState(), this);
+	lua_setglobal(this->_luaReader->getLuaState(), "GAME");
+	this->RegisterCPPFunctions(_luaReader->getLuaState());
+	this->_luaReader->LoadFile();
+}
+
+void GameScene::RegisterCPPFunctions(lua_State* L)
+{
+
 }
 
 void GameScene::Update(const float& dt)
@@ -77,7 +92,9 @@ void GameScene::Update(const float& dt)
 			_player->Move(0, 1, dt, _window->getSize());
 		}
 
+		ExecuteLuaUpdate();
 		_Baddie->Update(dt, _window->getSize());
+		
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CLOSE"))))
@@ -86,7 +103,7 @@ void GameScene::Update(const float& dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CHANGEM"))))
 	{
-		scene->push(new Editor(_window, supportedKeys, scene));
+		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
 	}
 }
 

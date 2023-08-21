@@ -13,8 +13,8 @@ void Editor::InitKeys()
 	editorKeys["Pausation"] = supportedKeys->at("E");
 }
 
-Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes):
-	Scene(_target, _supportKeys, _scenes)
+Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts)
+	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
 	InitKeys();
 	_rect.setSize(sf::Vector2f(_window->getSize()));
@@ -23,6 +23,20 @@ Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKe
 
 Editor::~Editor()
 {
+}
+
+void Editor::InitLua()
+{
+	_luaReader = new LuaReader("EditorSceneLua.lua");
+	lua_pushlightuserdata(this->_luaReader->getLuaState(), this);
+	lua_setglobal(this->_luaReader->getLuaState(), "EDITOR");
+	this->RegisterCPPFunctions(_luaReader->getLuaState());
+	this->_luaReader->LoadFile();
+}
+
+void Editor::RegisterCPPFunctions(lua_State* L)
+{
+
 }
 
 void Editor::Update(const float& dt)
@@ -49,12 +63,14 @@ void Editor::Update(const float& dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("CHANGEG"))))
 	{
-		scene->push(new Menu(_window, supportedKeys, scene));
+		scene->push(new Menu(_window, supportedKeys, scene, luaScripts));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("Pausation"))))
 	{
 		std::cout << "You do nothing! You lose!" << "\n";
 	}
+
+	//ExecuteLuaUpdate();
 }
 
 void Editor::Render(sf::RenderTarget* _target)

@@ -1,4 +1,5 @@
 #pragma once
+#include "LuaReader.h"
 class Scene
 {
 private:
@@ -18,9 +19,11 @@ protected:
 
 	virtual void InitKeys() = 0;
 
+	LuaReader *_luaReader;
+
 public:
 	Scene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,
-		std::stack<Scene*>* _scenes);
+		std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts);
 
 	virtual ~Scene();
 
@@ -30,11 +33,17 @@ public:
 
 	virtual void Render(sf::RenderTarget* _target) = 0;
 
+	virtual void  InitLua();
+	
+	virtual void ExecuteLuaUpdate();
+	virtual void ExecuteLuaRender();
+
 	virtual void UpdateMousePos();
 
 	const bool GetQuit();
 
 	std::stack<Scene*>* scene;
+	std::stack<LuaReader*>* luaScripts;
 
 	bool quit;
 
