@@ -15,7 +15,7 @@ end
 function Update()
  --print(p.base.myNum)  -- Para Player
  --print(e.base.myNum)  -- Para Enemy
- print("Game scene update")
+ --print("Game scene update")
 end
 
 function Render()

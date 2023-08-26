@@ -3,9 +3,9 @@
 
 Entity::Entity()
 {
-	moveSpeed = 100;
-
 	hp = 100;
+
+	isActive = true;
 }
 
 Entity::~Entity()
@@ -16,6 +16,28 @@ void Entity::InitSpirte(sf::Texture& _texture)
 {
 	_sprite.setTexture(_texture);
 	_hitboxInstance.Init(_texture, _sprite.getPosition());
+}
+
+
+void Entity::Dispara()
+{
+}
+
+void Entity::Die()
+{
+	isActive = false;
+}
+
+bool Entity::Alive()
+{
+	if (isActive) return true;
+	else {} return false;
+}
+
+
+void Entity::TakeDamage(int damageAmount)
+{
+	hp -= damageAmount;
 }
 
 
@@ -65,12 +87,23 @@ sf::Vector2f Entity::GetPosition() const
 
 void Entity::Update(const float& dt, sf::Vector2u windowSize)
 {
+	if (isActive)
+	{
+
+		if (hp <= 0)
+		{
+			Die();
+		}
+	}
 }
 
 void Entity::Render(sf::RenderTarget* _target)
 {
-	_target->draw(_sprite);
+	if (isActive) 
+	{
+		_target->draw(_sprite);
 
-	_hitboxInstance.Render(_target);
+		_hitboxInstance.Render(_target);
+	}
 }
 

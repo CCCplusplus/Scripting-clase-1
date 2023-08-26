@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullets.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Scripting clase 1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullets.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="Enemy.h" />

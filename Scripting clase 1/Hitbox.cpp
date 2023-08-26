@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "pch.h"
 #include "Hitbox.h"
 
 Hitbox::Hitbox()
@@ -26,8 +25,19 @@ void Hitbox::Init(sf::Texture& texture, const sf::Vector2f& position)
 
 void Hitbox::Follow(const sf::Sprite& sprite, const float x, const float y, const float& dt, sf::Vector2u windowSize)
 {
+    sf::Vector2f adjustedPosition = sprite.getPosition() - sf::Vector2f(_hitbox.getSize().x / 2.0f, _hitbox.getSize().y / 2.0f);
 
-    _hitbox.setPosition(sprite.getPosition());
+    
+    if (sprite.getScale().x < 0)
+    {
+        _hitbox.setPosition(sprite.getPosition().x - _hitbox.getSize().x, sprite.getPosition().y);
+    }
+    else
+    {
+        _hitbox.setPosition(sprite.getPosition());
+    }
+
+    _hitbox.setPosition(adjustedPosition);
 
     // Adjust position based on screen bounds
     if (_hitbox.getPosition().x > windowSize.x)

@@ -1,13 +1,22 @@
 #pragma once
 #include "Entity.h"
 #include "Player.h"
+#include "Bullets.h"
+#include "GameScene.h"
+
+class GameScene;
+class Player;
+
 class Enemy : public Entity
 {
 private:
 	Player* _player;
+	Bullets* bullets;
+	
 
 protected:
 	sf::Texture EnemyT;
+	sf::Texture EnemyBulletT;
 
 public:
 	Enemy(sf::Texture& _texture, const float x, const float y, Player* player);
@@ -16,8 +25,12 @@ public:
 
 	void SetObjective();
 
+	void Dispara();
+
 	void MovetoObjective(const float& dt, sf::Vector2u windowSize);
 
 	virtual void Update(const float& dt, sf::Vector2u windowSize);
+
+	GameScene* gameSceneInstance;
 };
 

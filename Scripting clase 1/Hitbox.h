@@ -4,7 +4,7 @@
 class Hitbox
 {
 private:
-    sf::RectangleShape _hitbox;
+    
 
 public:
     Hitbox();
@@ -13,6 +13,8 @@ public:
     void Init(sf::Texture& texture, const sf::Vector2f& position);
     void Follow(const sf::Sprite& sprite, const float x, const float y, const float& dt, sf::Vector2u windowSize);
     void Render(sf::RenderTarget* _target);
+
+    sf::RectangleShape _hitbox;
 };
 
 

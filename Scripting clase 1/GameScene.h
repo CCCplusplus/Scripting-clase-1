@@ -4,6 +4,11 @@
 #include "GameEngine.h"
 #include "Player.h"
 #include "Enemy.h"
+
+class Bullets;
+class Enemy;
+class Player;
+
 class GameScene : public Scene
 {
 private:
@@ -15,6 +20,9 @@ private:
 	Player* _player;
 
 	Enemy* _Baddie;
+
+	std::vector<Bullets*> activeBullets;
+	std::vector<Bullets*> playerBullets;
 
 protected:
 
@@ -37,5 +45,8 @@ public:
 	void Update(const float& dt);
 
 	void Render(sf::RenderTarget* _target);
+
+	void AddBullet(Bullets* bullet);
+	void AddPBullet(Bullets* bullet);
 };
 

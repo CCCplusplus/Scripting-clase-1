@@ -34,12 +34,14 @@ void GameScene::InitPlayer()
 {
 	PlayerI.loadFromFile("Player.png");
 	_player = new Player(PlayerI, 10, 10);
+	_player->gameboy = this;
 }
 
 void GameScene::InitEnemy()
 {
 	EnemyI.loadFromFile("Enemy.png");
 	_Baddie = new Enemy(EnemyI, 400, 400, _player);
+	_Baddie->gameSceneInstance = this;
 }
 
 void GameScene::InitBG()
@@ -68,6 +70,16 @@ void GameScene::RegisterCPPFunctions(lua_State* L)
 
 }
 
+void GameScene::AddBullet(Bullets* bullet)
+{
+	activeBullets.push_back(bullet);
+}
+
+void GameScene::AddPBullet(Bullets* bullet)
+{
+	playerBullets.push_back(bullet);
+}
+
 void GameScene::Update(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("PAUSE"))))
@@ -77,23 +89,72 @@ void GameScene::Update(const float& dt)
 	if (!isPaused) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT"))))
 		{
+			if (_player->State())
+			_player->Flip();
 			_player->Move(-1, 0, dt, _window->getSize());
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_RIGHT"))))
 		{
+			if(!_player->State())
+			_player->Flip();
 			_player->Move(1, 0, dt, _window->getSize());
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_UP"))))
 		{
 			_player->Move(0, -1, dt, _window->getSize());
+			_player->Dispara();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_DOWN"))))
 		{
 			_player->Move(0, 1, dt, _window->getSize());
 		}
 
+		for (Bullets* bullet : activeBullets)
+		{
+			bullet->Update(dt, _window->getSize());
+
+			bullet->HandleCollision(_player);
+		}
+
+		for (Bullets* bullet : playerBullets)
+		{
+			bullet->Update(dt, _window->getSize());
+
+			bullet->HandleCollision(_Baddie);
+		}
+
+		for (auto it = activeBullets.begin(); it != activeBullets.end(); )
+		{
+			if (!(*it)->Alive())
+			{
+				delete* it; // Libera la memoria
+				it = activeBullets.erase(it); // Elimina la bala del vector y actualiza el iterador
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		for (auto it = playerBullets.begin(); it != playerBullets.end(); )
+		{
+			if (!(*it)->Alive())
+			{
+				delete* it; // Libera la memoria
+				it = activeBullets.erase(it); // Elimina la bala del vector y actualiza el iterador
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+
 		ExecuteLuaUpdate();
+		if(_Baddie->Alive())
 		_Baddie->Update(dt, _window->getSize());
+		if(_player->Alive())
+		_player->Update(dt, _window->getSize());
 		
 	}
 
@@ -114,4 +175,14 @@ void GameScene::Render(sf::RenderTarget* _target)
 	_player->Render(_target);
 
 	_Baddie->Render(_target);
+
+	for (Bullets* bullet : activeBullets)
+	{
+		bullet->Render(_target);
+	}
+
+	for (Bullets* bullet : playerBullets)
+	{
+		bullet->Render(_target);
+	}
 }

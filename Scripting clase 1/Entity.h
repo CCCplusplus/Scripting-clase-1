@@ -6,9 +6,10 @@ private:
 
 protected:
 	float moveSpeed;
+	float elapsedtime;
 	int hp;
 	sf::Sprite _sprite;
-	Hitbox _hitboxInstance;
+	bool isActive;
 
 public:
 	Entity();
@@ -19,6 +20,13 @@ public:
 
 	void InitMovement();
 
+	virtual void Dispara();
+
+	virtual void Die();
+
+	virtual bool Alive();
+
+	virtual void TakeDamage(int damageAmount);
 
 	virtual void SetPosition(const float x, const float y);
 
@@ -29,5 +37,7 @@ public:
 	virtual void Update(const float& dt, sf::Vector2u windowSize);
 
 	void Render(sf::RenderTarget* _target);
+
+	Hitbox _hitboxInstance;
 };
 
