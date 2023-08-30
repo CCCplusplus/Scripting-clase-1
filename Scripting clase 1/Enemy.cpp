@@ -9,9 +9,13 @@ Enemy::Enemy(sf::Texture& _texture, const float X, const float Y, Player* player
 
 	moveSpeed = 150;
 
+	hp = 120;
+
 	_player = player; //guarda el apuntador al jugador
 
 	_sprite.setOrigin(_sprite.getTexture()->getSize().x / 2.0f, _sprite.getTexture()->getSize().y / 2.0f);
+
+	victorycounter = 0;
 
 	elapsedtime = 0;
 
@@ -29,26 +33,26 @@ void Enemy::SetObjective()
 
 void Enemy::Dispara()
 {
-	Bullets* bullet = new Bullets(EnemyBulletT, GetPosition().x + 20, GetPosition().y, 100);
-	bullet->activate(this); // Establece al Enemy como el propietario de la bala
-
-	sf::Vector2f direction = _player->GetPosition() - GetPosition();
-	float length = sqrt(direction.x * direction.x + direction.y * direction.y);
-	direction.x /= length;
-	direction.y /= length;
-
-	float bulletSpeed = 10.0f;
-	bullet->SetMoveSpeedX(direction.x * bulletSpeed);  // Nuevo
-	bullet->SetMoveSpeedY(direction.y * bulletSpeed);  // Nuevo
-
-	gameSceneInstance->AddBullet(bullet);
+	gameSceneInstance->AddBullet();
 }
+
+void Enemy::Die()
+{
+	isActive = false;
+	victorycounter++;
+}
+
+int Enemy::Victory()
+{
+	return victorycounter;
+}
+
 
 void Enemy::MovetoObjective(const float& dt, sf::Vector2u windowSize)
 {
 	//calculamos a donde tenemos que ir 
 	sf::Vector2f direction = _player->GetPosition() - GetPosition();
-	float Limit = 400;
+	float Limit = 600;
 	float length = sqrt(direction.x * direction.x + direction.y * direction.y);
 
     //se supone que esto es para "normalizar"

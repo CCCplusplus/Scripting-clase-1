@@ -55,7 +55,7 @@ void Menu::InitKeys()
 	menuKeys["ONEUP"] = supportedKeys->at("W");
 	menuKeys["ONEDOWN"] = supportedKeys->at("S");
 	menuKeys["DIE"] = supportedKeys->at("Escape");
-	menuKeys["CHANGEE"] = supportedKeys->at("C");
+	menuKeys["CHANGEE"] = supportedKeys->at("Space");
 	menuKeys["PAUSITA"] = supportedKeys->at("E");
 }
 

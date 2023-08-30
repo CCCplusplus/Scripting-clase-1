@@ -12,7 +12,7 @@ class Enemy : public Entity
 private:
 	Player* _player;
 	Bullets* bullets;
-	
+	int victorycounter;
 
 protected:
 	sf::Texture EnemyT;
@@ -26,6 +26,10 @@ public:
 	void SetObjective();
 
 	void Dispara();
+
+	void Die() override;
+
+	int Victory();
 
 	void MovetoObjective(const float& dt, sf::Vector2u windowSize);
 

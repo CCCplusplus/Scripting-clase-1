@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "GameEngine.h"
 #include "Button.h"
-#include "LuaReader.h"
+
 class Menu : public Scene
 {
 private:
@@ -35,8 +35,6 @@ public:
 	void Update(const float& dt);
 
 	void UpdateButtons(const float& dt);
-
-
 
 	void Render(sf::RenderTarget* _target);
 };

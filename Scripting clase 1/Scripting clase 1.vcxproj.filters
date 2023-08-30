@@ -57,6 +57,9 @@
     <ClCompile Include="Bullets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Victory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -98,6 +101,9 @@
     <ClInclude Include="Bullets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Victory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scenes.lua" />
@@ -107,5 +113,6 @@
     <None Include="GameSceneLua.lua" />
     <None Include="MainMenuSceneLua.lua" />
     <None Include="EditorSceneLua.lua" />
+    <None Include="VictoryScene.lua" />
   </ItemGroup>
 </Project>

@@ -9,16 +9,20 @@ void Editor::InitKeys()
 	editorKeys["E-UP"] = supportedKeys->at("W");
 	editorKeys["E-DOWN"] = supportedKeys->at("S");
 	editorKeys["MURDERIZE"] = supportedKeys->at("Escape");
-	editorKeys["CHANGEG"] = supportedKeys->at("C");
+	editorKeys["CHANGEG"] = supportedKeys->at("Space");
 	editorKeys["Pausation"] = supportedKeys->at("E");
 }
+
 
 Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts)
 	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
 	InitKeys();
-	_rect.setSize(sf::Vector2f(_window->getSize()));
-	_rect.setFillColor(sf::Color::Magenta);
+	InitFont();
+	InitButton();
+	InitBackground();
+	InitBGTexture();
+	InitLua();
 }
 
 Editor::~Editor()
@@ -37,6 +41,33 @@ void Editor::InitLua()
 void Editor::RegisterCPPFunctions(lua_State* L)
 {
 
+}
+
+void Editor::InitButton()
+{
+	buttons["Restart"] = new GUI::Button(700, 100, 350, 250, &_font,
+		"Restart", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, -1);
+	buttons["QUIT"] = new GUI::Button(700, 500, 350, 250, &_font,
+		"Quit", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 1);
+}
+
+void Editor::InitFont()
+{
+	_font.loadFromFile("OptimusPrinceps.ttf");
+}
+
+void Editor::InitBackground()
+{
+	_rect.setSize(sf::Vector2f(_window->getSize()));
+	_rect.setFillColor(sf::Color::White);
+}
+
+void Editor::InitBGTexture()
+{
+	BackgroundI.loadFromFile("GameOver.jpg");
+	_rect.setTexture(&BackgroundI);
 }
 
 void Editor::Update(const float& dt)
@@ -69,11 +100,37 @@ void Editor::Update(const float& dt)
 	{
 		std::cout << "You do nothing! You lose!" << "\n";
 	}
-
-	//ExecuteLuaUpdate();
+	
+	UpdateMousePos();
+	UpdateButtons(dt);
+	ExecuteLuaUpdate();
 }
+
+void Editor::UpdateButtons(const float& dt)
+{
+	for (auto b : buttons)
+	{
+		b.second->Update(mousePosView);
+	}
+	if (buttons["Restart"]->GetButtonPress())
+	{
+		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
+	}
+	if (buttons["QUIT"]->GetButtonPress())
+	{
+		EndState();
+	}
+}
+
+
 
 void Editor::Render(sf::RenderTarget* _target)
 {
 	_target->draw(_rect);
+
+	_target->draw(_rect);
+	for (auto b : buttons)
+	{
+		b.second->Render(_target);
+	}
 }

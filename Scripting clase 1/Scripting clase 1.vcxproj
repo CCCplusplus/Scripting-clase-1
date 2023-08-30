@@ -160,6 +160,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Scripting clase 1.cpp" />
+    <ClCompile Include="Victory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullets.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Victory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EditorSceneLua.lua" />
@@ -184,6 +186,7 @@
     <None Include="MainMenuSceneLua.lua" />
     <None Include="Player.lua" />
     <None Include="scenes.lua" />
+    <None Include="VictoryScene.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

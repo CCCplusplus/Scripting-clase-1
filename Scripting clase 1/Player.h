@@ -27,6 +27,8 @@ public:
 
 	bool State();
 
+	int GetHP();
+
 	GameScene* gameboy;
 };
 

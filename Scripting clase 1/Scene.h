@@ -11,6 +11,7 @@ protected:
 	std::map<std::string, int> newKeys;
 	std::map<std::string, int> menuKeys;
 	std::map<std::string, int> editorKeys;
+	std::map<std::string, int> victorykeys;
 	sf::Vector2f mousePosView;
 	sf::Vector2i mousePosWindow;
 	sf::Vector2i mousePosScreen;

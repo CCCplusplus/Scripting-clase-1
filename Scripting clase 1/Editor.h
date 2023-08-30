@@ -1,12 +1,15 @@
 #pragma once
 #include "Scene.h"
 #include "GameEngine.h"
+#include "Button.h"
 class Editor : public Scene
 {
 private:
 	sf::RectangleShape _rect;
+	sf::Texture BackgroundI;
+	sf::Font _font;
 
-
+	std::map<std::string, GUI::Button*> buttons;
 
 protected:
 	void InitKeys();
@@ -21,7 +24,17 @@ public:
 
 	void RegisterCPPFunctions(lua_State* L);
 
+	void InitButton();
+
+	void InitFont();
+
+	void InitBackground();
+
+	void InitBGTexture();
+
 	void Update(const float& dt);
+
+	void UpdateButtons(const float& dt);
 
 	void Render(sf::RenderTarget* _target);
 };

@@ -14,6 +14,7 @@
 #include <vector>
 #include <stdio.h>
 #include <stack>
+#include <sstream>
 
 
 //SFML

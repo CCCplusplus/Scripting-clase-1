@@ -11,6 +11,7 @@ protected:
     float lifeTime;
     float walkX;
     float walkY;
+    int score;
 
 public:
     
@@ -23,6 +24,8 @@ public:
     void HandleCollision(Entity* otherEntity);
 
     void activate(Entity* _owner);
+
+    void Deactivate();
 
     float GetMoveSpeedX() const;
 

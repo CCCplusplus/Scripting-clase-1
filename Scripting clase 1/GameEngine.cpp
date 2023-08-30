@@ -10,7 +10,7 @@ void GameEngine::InitKeys()
 	supportedKeys["Escape"] = 36;
 	supportedKeys["S"] = 18;
 	supportedKeys["W"] = 22;
-	supportedKeys["C"] = 2;
+	supportedKeys["Space"] = 57;
 	supportedKeys["E"] = 4;
 }
 

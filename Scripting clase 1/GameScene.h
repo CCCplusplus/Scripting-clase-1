@@ -16,13 +16,20 @@ private:
 	sf::Texture BackgroundI;
 	sf::Texture PlayerI;
 	sf::Texture EnemyI;
+	sf::Texture PBulletT;
+	sf::Texture EBulletT;
 
 	Player* _player;
 
 	Enemy* _Baddie;
 
 	std::vector<Bullets*> activeBullets;
+	std::deque<Bullets*> inactivePlayerBullets;
+	std::deque<Bullets*> inactiveEnemyBullets;
 	std::vector<Bullets*> playerBullets;
+	sf::Font _font;
+	sf::Text hpText;
+	float downtime;
 
 protected:
 
@@ -31,7 +38,10 @@ protected:
 	void InitEnemy();
 	void InitBG();
 	void InitBGTexture();
-
+	void InitFont();
+	void InitText();
+	void InitBullets();
+	void InitBulletT();
 	void InitLua();
 
 	void RegisterCPPFunctions(lua_State* L);
@@ -46,7 +56,11 @@ public:
 
 	void Render(sf::RenderTarget* _target);
 
-	void AddBullet(Bullets* bullet);
-	void AddPBullet(Bullets* bullet);
+	void AddBullet();
+	void AddPBullet();
+
+	void ReusePlayerBullets();
+	void ReuseEnemyBullets();
+
 };
 

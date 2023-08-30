@@ -11,6 +11,7 @@ Bullets::Bullets(sf::Texture& _texture, const float X, const float Y, int damage
     walkY = 0.0f;
     moveSpeed = 20; //tentativo
     lifeTime = 0.0f;
+    score = 0;
 }
 
 Bullets::~Bullets()
@@ -47,6 +48,11 @@ void Bullets::activate(Entity* _owner)
 {
     isActive = true;
     owner = _owner;
+}
+
+void Bullets::Deactivate()
+{
+    isActive = false;
 }
 
 float Bullets::GetMoveSpeedX() const {
