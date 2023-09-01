@@ -20,6 +20,8 @@ Victory::Victory(sf::RenderWindow* _target, std::map<std::string, int>* _support
 	InitBackground();
 	InitBGTexture();
 	InitLua();
+	InitMusic();
+	song.play();
 }
 
 Victory::~Victory()
@@ -51,6 +53,12 @@ void Victory::InitBGTexture()
 	_rect.setTexture(&BackgroundI);
 }
 
+void Victory::InitMusic()
+{
+	song.openFromFile("Win.mp3");
+	song.setVolume(50);
+}
+
 void Victory::Update(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("OUTA"))))
@@ -76,6 +84,7 @@ void Victory::Update(const float& dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("RESTART"))))
 	{
 		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
+		song.stop();
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("OUTE"))))
 	{

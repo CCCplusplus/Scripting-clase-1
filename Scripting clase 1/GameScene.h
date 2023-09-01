@@ -29,7 +29,10 @@ private:
 	std::vector<Bullets*> playerBullets;
 	sf::Font _font;
 	sf::Text hpText;
+	sf::Text victoryCounter;
+	sf::Music song;
 	float downtime;
+	int victory;
 
 protected:
 
@@ -42,6 +45,7 @@ protected:
 	void InitText();
 	void InitBullets();
 	void InitBulletT();
+	void InitMusic();
 	void InitLua();
 
 	void RegisterCPPFunctions(lua_State* L);

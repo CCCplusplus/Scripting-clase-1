@@ -9,6 +9,7 @@ private:
 	sf::RectangleShape _rect;
 	sf::Font _font;
 	sf::Texture BackgroundI;
+	sf::Music song;
 
 	std::map<std::string, GUI::Button*> buttons;
 
@@ -18,6 +19,7 @@ private:
 	void InitFont();
 	void InitButton();
 	void InitBGTexture();
+	void InitMusic();
 
 	void InitLua();
 

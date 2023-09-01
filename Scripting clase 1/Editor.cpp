@@ -22,7 +22,9 @@ Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKe
 	InitButton();
 	InitBackground();
 	InitBGTexture();
+	InitMusic();
 	InitLua();
+	song.play();
 }
 
 Editor::~Editor()
@@ -70,6 +72,12 @@ void Editor::InitBGTexture()
 	_rect.setTexture(&BackgroundI);
 }
 
+void Editor::InitMusic()
+{
+	song.openFromFile("Sadness.mp3");
+	song.setVolume(6);
+}
+
 void Editor::Update(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorKeys.at("E-LEFT"))))
@@ -114,6 +122,7 @@ void Editor::UpdateButtons(const float& dt)
 	}
 	if (buttons["Restart"]->GetButtonPress())
 	{
+		song.stop();
 		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
 	}
 	if (buttons["QUIT"]->GetButtonPress())

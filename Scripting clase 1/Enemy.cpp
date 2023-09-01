@@ -15,8 +15,6 @@ Enemy::Enemy(sf::Texture& _texture, const float X, const float Y, Player* player
 
 	_sprite.setOrigin(_sprite.getTexture()->getSize().x / 2.0f, _sprite.getTexture()->getSize().y / 2.0f);
 
-	victorycounter = 0;
-
 	elapsedtime = 0;
 
 	EnemyBulletT.loadFromFile("BlackHole.png");
@@ -39,12 +37,6 @@ void Enemy::Dispara()
 void Enemy::Die()
 {
 	isActive = false;
-	victorycounter++;
-}
-
-int Enemy::Victory()
-{
-	return victorycounter;
 }
 
 

@@ -17,14 +17,14 @@ void Menu::InitFont()
 void Menu::InitButton()
 {
 	buttons ["New Game"] = new GUI::Button(100, 100, 350, 250, &_font,
-		"New Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		"Start", 50, sf::Color::White, sf::Color::White, sf::Color::White,
 		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, -1);
 	buttons ["Settings"] = new GUI::Button(500, 100, 350, 250, &_font,
-		"Newer Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		"Skip", 50, sf::Color::White, sf::Color::White, sf::Color::White,
 		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 1);
 
 	buttons ["Quit"] = new GUI::Button(900, 100, 350, 250, &_font,
-		"Newest Button", 50, sf::Color::White, sf::Color::White, sf::Color::White,
+		"Quit", 50, sf::Color::White, sf::Color::White, sf::Color::White,
 		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 2);
 
 }
@@ -33,6 +33,12 @@ void Menu::InitBGTexture()
 {
 	BackgroundI.loadFromFile("MainMenuBG.jpg");
 	_rect.setTexture(&BackgroundI);
+}
+
+void Menu::InitMusic()
+{
+	song.openFromFile("Starto.mp3");
+	song.setVolume(50);
 }
 
 void Menu::InitLua()
@@ -69,7 +75,9 @@ Menu::Menu(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, 
 	InitButton();
 	InitBackground();
 	InitBGTexture();
+	InitMusic();
 	InitLua();
+	song.play();
 }
 
 Menu::~Menu()
@@ -104,6 +112,7 @@ void Menu::Update(const float& dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("CHANGEE"))))
 	{
+		song.stop();
 		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(menuKeys.at("PAUSITA"))))
@@ -123,10 +132,12 @@ void Menu::UpdateButtons(const float& dt)
 	}
 	if (buttons["New Game"]->GetButtonPress()) 
 	{
+		song.stop();
 		scene->push(new GameScene(_window, supportedKeys, scene, luaScripts));
 	}
 	if (buttons["Settings"]->GetButtonPress())
 	{
+		song.stop();
 		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
 	}
 	if (buttons["Quit"]->GetButtonPress())

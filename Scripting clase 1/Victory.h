@@ -6,6 +6,7 @@ class Victory : public Scene
 private:
 	sf::RectangleShape _rect;
 	sf::Texture BackgroundI;
+	sf::Music song;
 
 	void InitLua();
 
@@ -14,6 +15,8 @@ private:
 	void InitBackground();
 
 	void InitBGTexture();
+
+	void InitMusic();
 
 protected:
 	void InitKeys();

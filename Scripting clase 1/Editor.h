@@ -8,7 +8,7 @@ private:
 	sf::RectangleShape _rect;
 	sf::Texture BackgroundI;
 	sf::Font _font;
-
+	sf::Music song;
 	std::map<std::string, GUI::Button*> buttons;
 
 protected:
@@ -31,6 +31,8 @@ public:
 	void InitBackground();
 
 	void InitBGTexture();
+
+	void InitMusic();
 
 	void Update(const float& dt);
 

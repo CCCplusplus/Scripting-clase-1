@@ -15,9 +15,12 @@ GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _sup
 	InitBullets();
 	InitFont();
 	InitText();
+	InitMusic();
 	isPaused = false;
 	InitLua();
+	victory = 10;
 	downtime = 0.0f;
+	song.play();
 }
 
 GameScene::~GameScene()
@@ -74,6 +77,11 @@ void GameScene::InitText()
 	hpText.setCharacterSize(60);
 	hpText.setFillColor(sf::Color::White);
 	hpText.setPosition(10, 10);
+
+	victoryCounter.setFont(_font);
+	victoryCounter.setCharacterSize(60);
+	victoryCounter.setFillColor(sf::Color::White);
+	victoryCounter.setPosition(1320, 10);
 }
 
 void GameScene::InitBullets()
@@ -95,6 +103,12 @@ void GameScene::InitBulletT()
 {
 	PBulletT.loadFromFile("Hadouken.png");
 	EBulletT.loadFromFile("BlackHole.png");
+}
+
+void GameScene::InitMusic()
+{
+	song.openFromFile("Level.mp3");
+	song.setVolume(6);
 }
 
 void GameScene::InitLua()
@@ -247,14 +261,22 @@ void GameScene::Update(const float& dt)
 		downtime -= dt;
 	}
 
-	if (!_player->Alive()) 
+	if (!_player->Alive()) {
+		song.stop();
 		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
-	if(_Baddie->Victory() == 10)
+	}
+	if (!_Baddie->Alive()) {
+		song.stop();
 		scene->push(new Victory(_window, supportedKeys, scene, luaScripts));
+	}
 
 	std::stringstream ss;
 	ss << "HP: " << _player->GetHP();  // Asumiendo que tienes un método getHP() en Player.
 	hpText.setString(ss.str());
+
+	std::stringstream sa;
+	sa << "Enemy Kills to Win: " << victory;  // Asumiendo que tienes un método getHP() en Player.
+	victoryCounter.setString(sa.str());
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CLOSE"))))
 	{
@@ -272,7 +294,7 @@ void GameScene::Render(sf::RenderTarget* _target)
 
 	_target->draw(hpText);
 
-
+	_target->draw(victoryCounter);
 
 	for (Bullets* bullet : activeBullets)
 	{
