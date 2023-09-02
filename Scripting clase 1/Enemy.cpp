@@ -73,3 +73,14 @@ void Enemy::Update(const float& dt, sf::Vector2u windowSize)
 	SetObjective();
 	MovetoObjective(dt, windowSize);
 }
+
+void Enemy::UpdateAliveStatus()
+{
+	if (_wasAlive && !Alive()) {
+		_wasAlive = false;
+	}
+	else if (Alive()) {
+		_wasAlive = true;
+	}
+
+}

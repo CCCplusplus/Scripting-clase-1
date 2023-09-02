@@ -21,6 +21,8 @@ GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _sup
 	victory = 10;
 	downtime = 0.0f;
 	song.play();
+	activeenemies = 0;
+	enemySpawnTimer = enemySpawnInterval;
 }
 
 GameScene::~GameScene()
@@ -49,9 +51,19 @@ void GameScene::InitPlayer()
 void GameScene::InitEnemy()
 {
 	EnemyI.loadFromFile("Enemy.png");
-	_Baddie = new Enemy(EnemyI, 400, 900, _player);
-	_Baddie->gameSceneInstance = this;
 }
+
+void GameScene::SpawnEnemy()
+{
+	if (activeenemies < maxEnemies) {
+		Enemy* enemy = new Enemy(EnemyI, 400, 900, _player);
+		enemy->gameSceneInstance = this;
+		_Baddies.push_back(enemy);
+		activeenemies++;
+	}
+}
+
+
 
 void GameScene::InitBG()
 {
@@ -86,14 +98,14 @@ void GameScene::InitText()
 
 void GameScene::InitBullets()
 {
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 30; ++i) {
 		Bullets* bullet = new Bullets(PBulletT, _player->GetPosition().x+20, _player->GetPosition().y, 40);
 		bullet->Deactivate();
 		inactivePlayerBullets.push_back(bullet);
 	}
 
-	for (int i = 0; i < 30; ++i) {
-		Bullets* bullet = new Bullets(EBulletT, _Baddie->GetPosition().x, _Baddie->GetPosition().y, 50);
+	for (int i = 0; i < 90; ++i) {
+		Bullets* bullet = new Bullets(EBulletT, 400, 900, 50);
 		bullet->Deactivate();
 		inactiveEnemyBullets.push_back(bullet);
 	}
@@ -126,24 +138,24 @@ void GameScene::RegisterCPPFunctions(lua_State* L)
 }
 
 void GameScene::AddBullet() {
-	if (!inactiveEnemyBullets.empty()) {
-		Bullets* bullet = inactiveEnemyBullets.front();
-		inactiveEnemyBullets.pop_front();
+	for (Enemy* enemy : _Baddies) {
+		if (enemy->Alive() && !inactiveEnemyBullets.empty()) {
+			Bullets* bullet = inactiveEnemyBullets.front();
+			inactiveEnemyBullets.pop_front();
 
-		bullet->SetPosition(_Baddie->GetPosition().x + 20, _Baddie->GetPosition().y);
+			bullet->SetPosition(enemy->GetPosition().x + 20, enemy->GetPosition().y);
+			bullet->activate(enemy);
+			sf::Vector2f direction = _player->GetPosition() - enemy->GetPosition();
+			float length = sqrt(direction.x * direction.x + direction.y * direction.y);
+			direction.x /= length;
+			direction.y /= length;
 
-		// Configuración para el enemigo
-		bullet->activate(_Baddie);
-		sf::Vector2f direction = _player->GetPosition() - _Baddie->GetPosition();
-		float length = sqrt(direction.x * direction.x + direction.y * direction.y);
-		direction.x /= length;
-		direction.y /= length;
+			float bulletSpeed = 10.0f;
+			bullet->SetMoveSpeedX(direction.x * bulletSpeed);
+			bullet->SetMoveSpeedY(direction.y * bulletSpeed);
 
-		float bulletSpeed = 10.0f;
-		bullet->SetMoveSpeedX(direction.x * bulletSpeed);
-		bullet->SetMoveSpeedY(direction.y * bulletSpeed);
-
-		activeBullets.push_back(bullet);
+			activeBullets.push_back(bullet);
+		}
 	}
 }
 
@@ -207,13 +219,13 @@ void GameScene::Update(const float& dt)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT"))))
 		{
 			if (_player->State())
-			_player->Flip();
+				_player->Flip();
 			_player->Move(-1, 0, dt, _window->getSize());
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_RIGHT"))))
 		{
-			if(!_player->State())
-			_player->Flip();
+			if (!_player->State())
+				_player->Flip();
 			_player->Move(1, 0, dt, _window->getSize());
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_UP"))))
@@ -245,19 +257,30 @@ void GameScene::Update(const float& dt)
 			bullet->HandleCollision(_player);
 		}
 
-		for (Bullets* bullet : playerBullets)
-		{
+		for (Bullets* bullet : playerBullets) {
 			bullet->Update(dt, _window->getSize());
-
-			bullet->HandleCollision(_Baddie);
+			for (Enemy* enemy : _Baddies) {
+				if (enemy->Alive()) {
+					bullet->HandleCollision(enemy);
+				}
+			}
 		}
 
 
 		ExecuteLuaUpdate();
-		if(_Baddie->Alive())
-		_Baddie->Update(dt, _window->getSize());
-		if(_player->Alive())
-		_player->Update(dt, _window->getSize());
+		enemySpawnTimer -= dt;
+		if (enemySpawnTimer <= 0) {
+			SpawnEnemy();
+			enemySpawnTimer = enemySpawnInterval;
+		}
+
+		for (Enemy* enemy : _Baddies) {
+			if (enemy->Alive()) {
+				enemy->Update(dt, _window->getSize());
+			}
+		}
+		if (_player->Alive())
+			_player->Update(dt, _window->getSize());
 		downtime -= dt;
 	}
 
@@ -265,17 +288,27 @@ void GameScene::Update(const float& dt)
 		song.stop();
 		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
 	}
-	if (!_Baddie->Alive()) {
+	for (Enemy* enemy : _Baddies) {
+		if (enemy->WasAlive() && !enemy->Alive()) {
+			activeenemies--;
+			victory--;
+		}
+		enemy->UpdateAliveStatus();
+	}
+
+	if (victory <= 0) {
 		song.stop();
 		scene->push(new Victory(_window, supportedKeys, scene, luaScripts));
 	}
 
+	
+
 	std::stringstream ss;
-	ss << "HP: " << _player->GetHP();  // Asumiendo que tienes un método getHP() en Player.
+	ss << "HP: " << _player->GetHP();  
 	hpText.setString(ss.str());
 
 	std::stringstream sa;
-	sa << "Enemy Kills to Win: " << victory;  // Asumiendo que tienes un método getHP() en Player.
+	sa << "Enemy Kills to Win: " << victory;
 	victoryCounter.setString(sa.str());
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CLOSE"))))
@@ -290,7 +323,11 @@ void GameScene::Render(sf::RenderTarget* _target)
 
 	_player->Render(_target);
 
-	_Baddie->Render(_target);
+	for (Enemy* enemy : _Baddies) {
+		if (enemy->Alive()) {
+			enemy->Render(_target);
+		}
+	}
 
 	_target->draw(hpText);
 

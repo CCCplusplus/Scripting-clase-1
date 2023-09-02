@@ -21,7 +21,10 @@ private:
 
 	Player* _player;
 
-	Enemy* _Baddie;
+	std::vector<Enemy*> _Baddies;
+	float enemySpawnTimer;
+	const float enemySpawnInterval = 4.0f;
+	const int maxEnemies = 3;
 
 	std::vector<Bullets*> activeBullets;
 	std::deque<Bullets*> inactivePlayerBullets;
@@ -32,6 +35,7 @@ private:
 	sf::Text victoryCounter;
 	sf::Music song;
 	float downtime;
+	int activeenemies;
 	int victory;
 
 protected:
@@ -39,6 +43,7 @@ protected:
 	void InitKeys();
 	void InitPlayer();
 	void InitEnemy();
+	void SpawnEnemy();
 	void InitBG();
 	void InitBGTexture();
 	void InitFont();

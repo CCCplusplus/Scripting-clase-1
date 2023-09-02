@@ -12,6 +12,7 @@ class Enemy : public Entity
 private:
 	Player* _player;
 	Bullets* bullets;
+	bool _wasAlive;
 
 protected:
 	sf::Texture EnemyT;
@@ -31,6 +32,9 @@ public:
 	void MovetoObjective(const float& dt, sf::Vector2u windowSize);
 
 	virtual void Update(const float& dt, sf::Vector2u windowSize);
+
+	bool WasAlive() const { return _wasAlive; }
+	void UpdateAliveStatus();
 
 	GameScene* gameSceneInstance;
 };
