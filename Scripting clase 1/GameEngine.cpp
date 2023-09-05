@@ -5,13 +5,9 @@
 
 void GameEngine::InitKeys()
 {
-	supportedKeys["A"] = 0;
-	supportedKeys["D"] = 3;
-	supportedKeys["Escape"] = 36;
-	supportedKeys["S"] = 18;
-	supportedKeys["W"] = 22;
-	supportedKeys["Space"] = 57;
-	supportedKeys["E"] = 4;
+	LuaReader lua("Keys.lua");
+	lua.LoadFile();
+	supportedKeys = lua.GetKeys();
 }
 
 void GameEngine::InitWindow()

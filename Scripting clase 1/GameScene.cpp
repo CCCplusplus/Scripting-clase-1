@@ -20,6 +20,8 @@ GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _sup
 	InitLua();
 	victory = 10;
 	downtime = 0.0f;
+	pausetime = 0.0f;
+	quittime = 0.0f;
 	song.play();
 	activeenemies = 0;
 	enemySpawnTimer = enemySpawnInterval;
@@ -213,7 +215,10 @@ void GameScene::Update(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("PAUSE"))))
 	{
-		isPaused = !isPaused;
+		if (pausetime  <= 0) {
+			pausetime = 0.3f;
+			isPaused = !isPaused;
+		}
 	}
 	if (!isPaused) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("MOVE_LEFT"))))
@@ -238,12 +243,9 @@ void GameScene::Update(const float& dt)
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CHANGEM"))))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CHANGEM"))))
-			{
-				if (downtime <= 0) {
-					downtime = 2.0f;
-					_player->Dispara();
-				}
+			if (downtime <= 0) {
+				downtime = 1.0f;
+				_player->Dispara();
 			}
 		}
 
@@ -282,8 +284,9 @@ void GameScene::Update(const float& dt)
 		if (_player->Alive())
 			_player->Update(dt, _window->getSize());
 		downtime -= dt;
+		
 	}
-
+	pausetime -= dt;
 	if (!_player->Alive()) {
 		song.stop();
 		scene->push(new Editor(_window, supportedKeys, scene, luaScripts));
@@ -313,8 +316,12 @@ void GameScene::Update(const float& dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(newKeys.at("CLOSE"))))
 	{
-		EndState();
+		if (quittime <= 0) {
+			quittime = 0.3f;
+			EndState();
+		}
 	}
+	quittime -= dt;
 }
 
 void GameScene::Render(sf::RenderTarget* _target)

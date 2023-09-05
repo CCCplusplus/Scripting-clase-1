@@ -114,5 +114,7 @@
     <None Include="MainMenuSceneLua.lua" />
     <None Include="EditorSceneLua.lua" />
     <None Include="VictoryScene.lua" />
+    <None Include="Keys.lua" />
+    <None Include="Buttons.lua" />
   </ItemGroup>
 </Project>

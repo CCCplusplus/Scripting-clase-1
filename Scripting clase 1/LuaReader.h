@@ -20,5 +20,7 @@ public:
 
 	void Render();
 
+	std::map<std::string, int> GetKeys();
+
 };
 

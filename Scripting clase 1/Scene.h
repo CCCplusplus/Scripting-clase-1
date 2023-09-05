@@ -3,7 +3,7 @@
 class Scene
 {
 private:
-	 
+	
 
 protected:
 	sf::RenderWindow* _window;
@@ -17,7 +17,7 @@ protected:
 	sf::Vector2i mousePosScreen;
 	sf::Vector2u mousePosGrid;
 
-
+	float quittime;
 	virtual void InitKeys() = 0;
 
 	LuaReader *_luaReader;

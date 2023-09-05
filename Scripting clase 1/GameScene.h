@@ -35,6 +35,7 @@ private:
 	sf::Text victoryCounter;
 	sf::Music song;
 	float downtime;
+	float pausetime;
 	int activeenemies;
 	int victory;
 

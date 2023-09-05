@@ -48,3 +48,19 @@ void LuaReader::Render()
 		throw("CPP::ERROR::CONSTROCTOR::CANNOT CALL UPDATE FUNCTION");
 	}
 }
+
+std::map<std::string, int> LuaReader::GetKeys() {
+	std::map<std::string, int> keys;
+
+	lua_getglobal(L, "keys");
+	lua_pushnil(L);  // First key
+	while (lua_next(L, -2)) {
+		const char* keyName = lua_tostring(L, -2);
+		int keyValue = lua_tointeger(L, -1);
+		keys[keyName] = keyValue;
+		lua_pop(L, 1);  // Removes 'value'; keeps 'key' for next iteration
+	}
+
+	return keys;
+}
+
