@@ -179,7 +179,6 @@
     <ClInclude Include="Victory.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Buttons.lua" />
     <None Include="EditorSceneLua.lua" />
     <None Include="Enemy.lua" />
     <None Include="Entity.lua" />

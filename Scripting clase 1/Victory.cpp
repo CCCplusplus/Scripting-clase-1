@@ -18,9 +18,7 @@ Victory::Victory(sf::RenderWindow* _target, std::map<std::string, int>* _support
 {
 	InitKeys();
 	InitBackground();
-	InitBGTexture();
 	InitLua();
-	InitMusic();
 	song.play();
 }
 
@@ -35,11 +33,44 @@ void Victory::InitLua()
 	lua_setglobal(this->_luaReader->getLuaState(), "VICTORY");
 	this->RegisterCPPFunctions(_luaReader->getLuaState());
 	this->_luaReader->LoadFile();
+
+	lua_getglobal(_luaReader->getLuaState(), "InitializeVictory");
+	if (lua_pcall(_luaReader->getLuaState(), 0, 0, 0) != 0)
+		std::cerr << "Error al llamar a InitializeMainMenu: " << lua_tostring(_luaReader->getLuaState(), -1) << std::endl;
 }
 
 void Victory::RegisterCPPFunctions(lua_State* L)
 {
+	lua_register(L, "setVictoryMusicFile", SetVictoryMusicFileLua);
+    lua_register(L, "setVictoryMusicVolume", SetVictoryMusicVolumeLua);
+    lua_register(L, "setVictoryBackgroundTexture", SetVictoryBackgroundTextureLua);
 }
+
+int Victory::SetVictoryMusicFileLua(lua_State* L) {
+	lua_getglobal(L, "VICTORY");
+	Victory* victory = (Victory*)lua_touserdata(L, -1);
+	const char* filename = lua_tostring(L, 1);
+	victory->song.openFromFile(filename);
+	return 0;
+}
+
+int Victory::SetVictoryMusicVolumeLua(lua_State* L) {
+	lua_getglobal(L, "VICTORY");
+	Victory* victory = (Victory*)lua_touserdata(L, -1);
+	float volume = lua_tonumber(L, 1);
+	victory->song.setVolume(volume);
+	return 0;
+}
+
+int Victory::SetVictoryBackgroundTextureLua(lua_State* L) {
+	lua_getglobal(L, "VICTORY");
+	Victory* victory = (Victory*)lua_touserdata(L, -1);
+	const char* texturename = lua_tostring(L, 1);
+	victory->BackgroundI.loadFromFile(texturename);
+	victory->_rect.setTexture(&victory->BackgroundI);
+	return 0;
+}
+
 
 void Victory::InitBackground()
 {
@@ -47,17 +78,6 @@ void Victory::InitBackground()
 	_rect.setFillColor(sf::Color::White);
 }
 
-void Victory::InitBGTexture()
-{
-	BackgroundI.loadFromFile("Win.jpg");
-	_rect.setTexture(&BackgroundI);
-}
-
-void Victory::InitMusic()
-{
-	song.openFromFile("Win.mp3");
-	song.setVolume(50);
-}
 
 void Victory::Update(const float& dt)
 {

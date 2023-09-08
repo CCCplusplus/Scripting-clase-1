@@ -10,6 +10,20 @@ local this = scenes:New()
  return this
 end
 
+function InitializeVictory()
+    InitMusic()
+    InitBGTexture()
+end
+
+function InitMusic()
+    setVictoryMusicFile("Win.mp3")
+    setVictoryMusicVolume(50)
+end
+
+function InitBGTexture()
+    setVictoryBackgroundTexture("Win.jpg")
+end
+
 function Update()
  print("You Win")
 end

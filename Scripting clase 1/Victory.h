@@ -14,9 +14,9 @@ private:
 
 	void InitBackground();
 
-	void InitBGTexture();
-
-	void InitMusic();
+	static int SetVictoryMusicFileLua(lua_State* L);
+	static int SetVictoryMusicVolumeLua(lua_State* L);
+	static int SetVictoryBackgroundTextureLua(lua_State* L);
 
 protected:
 	void InitKeys();

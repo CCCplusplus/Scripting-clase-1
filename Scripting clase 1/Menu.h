@@ -16,14 +16,17 @@ private:
 	
 
 	void InitBackground();
-	void InitFont();
 	void InitButton();
-	void InitBGTexture();
-	void InitMusic();
+
 
 	void InitLua();
 
 	void RegisterCPPFunctions(lua_State* L);
+
+	static int SetMusicFileLua(lua_State* L);
+	static int SetMusicVolumeLua(lua_State* L);
+	static int SetFontFileLua(lua_State* L);
+	static int SetBackgroundTextureLua(lua_State* L);
 
 protected:
 	void InitKeys();

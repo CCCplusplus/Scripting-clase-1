@@ -18,8 +18,6 @@ public:
 
 	void InitSpirte(sf::Texture& _texture);
 
-	void InitMovement();
-
 	virtual void Dispara();
 
 	virtual void Die();

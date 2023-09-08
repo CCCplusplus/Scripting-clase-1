@@ -18,11 +18,8 @@ Editor::Editor(sf::RenderWindow* _target, std::map<std::string, int>* _supportKe
 	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
 	InitKeys();
-	InitFont();
 	InitButton();
 	InitBackground();
-	InitBGTexture();
-	InitMusic();
 	InitLua();
 	song.play();
 }
@@ -38,11 +35,18 @@ void Editor::InitLua()
 	lua_setglobal(this->_luaReader->getLuaState(), "EDITOR");
 	this->RegisterCPPFunctions(_luaReader->getLuaState());
 	this->_luaReader->LoadFile();
+
+	lua_getglobal(_luaReader->getLuaState(), "InitializeEditor");
+	if (lua_pcall(_luaReader->getLuaState(), 0, 0, 0) != 0)
+		std::cerr << "Error al llamar a InitializeEditor: " << lua_tostring(_luaReader->getLuaState(), -1) << std::endl;
 }
 
 void Editor::RegisterCPPFunctions(lua_State* L)
 {
-
+	lua_register(L, "setFontFile", SetFontFileLua);
+	lua_register(L, "setBackgroundTexture", SetBackgroundTextureLua);
+	lua_register(L, "setMusicFile", SetMusicFileLua);
+	lua_register(L, "setMusicVolume", SetMusicVolumeLua);
 }
 
 void Editor::InitButton()
@@ -55,28 +59,45 @@ void Editor::InitButton()
 		sf::Color::Red, sf::Color::Cyan, sf::Color::Black, 1);
 }
 
-void Editor::InitFont()
-{
-	_font.loadFromFile("OptimusPrinceps.ttf");
-}
-
 void Editor::InitBackground()
 {
 	_rect.setSize(sf::Vector2f(_window->getSize()));
 	_rect.setFillColor(sf::Color::White);
 }
 
-void Editor::InitBGTexture()
-{
-	BackgroundI.loadFromFile("GameOver.jpg");
-	_rect.setTexture(&BackgroundI);
+int Editor::SetFontFileLua(lua_State* L) {
+	lua_getglobal(L, "EDITOR");
+	Editor* editor = (Editor*)lua_touserdata(L, -1);
+	const char* fontname = lua_tostring(L, 1);
+	editor->_font.loadFromFile(fontname);
+	return 0;
 }
 
-void Editor::InitMusic()
-{
-	song.openFromFile("Sadness.mp3");
-	song.setVolume(6);
+int Editor::SetBackgroundTextureLua(lua_State* L) {
+	lua_getglobal(L, "EDITOR");
+	Editor* editor = (Editor*)lua_touserdata(L, -1);
+	const char* texturename = lua_tostring(L, 1);
+	editor->BackgroundI.loadFromFile(texturename);
+	editor->_rect.setTexture(&editor->BackgroundI);
+	return 0;
 }
+
+int Editor::SetMusicFileLua(lua_State* L) {
+	lua_getglobal(L, "EDITOR");
+	Editor* editor = (Editor*)lua_touserdata(L, -1);
+	const char* filename = lua_tostring(L, 1);
+	editor->song.openFromFile(filename);
+	return 0;
+}
+
+int Editor::SetMusicVolumeLua(lua_State* L) {
+	lua_getglobal(L, "EDITOR");
+	Editor* editor = (Editor*)lua_touserdata(L, -1);
+	float volume = lua_tonumber(L, 1);
+	editor->song.setVolume(volume);
+	return 0;
+}
+
 
 void Editor::Update(const float& dt)
 {
@@ -111,7 +132,6 @@ void Editor::Update(const float& dt)
 	
 	UpdateMousePos();
 	UpdateButtons(dt);
-	ExecuteLuaUpdate();
 }
 
 void Editor::UpdateButtons(const float& dt)

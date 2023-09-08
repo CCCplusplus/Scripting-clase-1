@@ -19,20 +19,15 @@ public:
 		std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts);
 
 	virtual ~Editor();
-
 	void InitLua();
-
 	void RegisterCPPFunctions(lua_State* L);
-
 	void InitButton();
-
-	void InitFont();
-
 	void InitBackground();
 
-	void InitBGTexture();
-
-	void InitMusic();
+	static int SetFontFileLua(lua_State* L);
+	static int SetBackgroundTextureLua(lua_State* L);
+	static int SetMusicFileLua(lua_State* L);
+	static int SetMusicVolumeLua(lua_State* L);
 
 	void Update(const float& dt);
 
