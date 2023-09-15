@@ -43,18 +43,27 @@ protected:
 
 	void InitKeys();
 	void InitPlayer();
-	void InitEnemy();
 	void SpawnEnemy();
 	void InitBG();
-	void InitBGTexture();
-	void InitFont();
-	void InitText();
 	void InitBullets();
-	void InitBulletT();
-	void InitMusic();
 	void InitLua();
 
 	void RegisterCPPFunctions(lua_State* L);
+
+	static int SetEnemySpriteLua(lua_State* L);
+	static int SetBackgroundTextureLua(lua_State* L);
+	static int SetFontFileLua(lua_State* L);
+	static int SetHPTextAttributesLua(lua_State* L);
+	static int SetVictoryCounterAttributesLua(lua_State* L);
+	static int SetBulletTexturesLua(lua_State* L);
+	static int SetMusicFileLua(lua_State* L);
+	static int SetMusicVolumeLua(lua_State* L);
+	static int SetVictoryLua(lua_State* L);
+	static int SetDowntimeLua(lua_State* L);
+	static int SetPausetimeLua(lua_State* L);
+	static int SetQuittimeLua(lua_State* L);
+	static int SetActiveEnemiesLua(lua_State* L);
+
 
 public:
 	GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys,

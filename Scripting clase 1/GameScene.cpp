@@ -6,24 +6,13 @@
 GameScene::GameScene(sf::RenderWindow* _target, std::map<std::string, int>* _supportKeys, std::stack<Scene*>* _scenes, std::stack<LuaReader*>* _luaScripts)
 	: Scene(_target, _supportKeys, _scenes, _luaScripts)
 {
-	InitKeys();
-	InitPlayer();
-	InitEnemy();
-	InitBG();
-	InitBGTexture();
-	InitBulletT();
-	InitBullets();
-	InitFont();
-	InitText();
-	InitMusic();
-	isPaused = false;
 	InitLua();
-	victory = 10;
-	downtime = 0.0f;
-	pausetime = 0.0f;
-	quittime = 0.0f;
+	InitPlayer();
+	InitKeys();
+	InitBG();
+	InitBullets();
+	isPaused = false;
 	song.play();
-	activeenemies = 0;
 	enemySpawnTimer = enemySpawnInterval;
 }
 
@@ -50,9 +39,160 @@ void GameScene::InitPlayer()
 	_player->gameboy = this;
 }
 
-void GameScene::InitEnemy()
+
+
+void GameScene::InitLua()
 {
-	EnemyI.loadFromFile("Enemy.png");
+	_luaReader = new LuaReader("GameSceneLua.lua");
+	lua_pushlightuserdata(this->_luaReader->getLuaState(), this);
+	lua_setglobal(this->_luaReader->getLuaState(), "GAME");
+	this->RegisterCPPFunctions(_luaReader->getLuaState());
+	this->_luaReader->LoadFile();
+
+	lua_getglobal(_luaReader->getLuaState(), "InitializeGameValues");
+	if (lua_pcall(_luaReader->getLuaState(), 0, 0, 0) != 0)
+		std::cerr << "Error al llamar a InitializeGameValues: " << lua_tostring(_luaReader->getLuaState(), -1) << std::endl;
+
+	lua_getglobal(_luaReader->getLuaState(), "InitializeGameScene");
+	if (lua_pcall(_luaReader->getLuaState(), 0, 0, 0) != 0)
+		std::cerr << "Error al llamar a InitializeGameScene: " << lua_tostring(_luaReader->getLuaState(), -1) << std::endl;
+}
+
+void GameScene::RegisterCPPFunctions(lua_State* L)
+{
+	lua_register(L, "setEnemySprite", SetEnemySpriteLua);
+	lua_register(L, "setBackgroundTexture", SetBackgroundTextureLua);
+	lua_register(L, "setGameFont", SetFontFileLua);
+	lua_register(L, "setHPTextAttributes", SetHPTextAttributesLua);
+	lua_register(L, "setVictoryCounterAttributes", SetVictoryCounterAttributesLua);
+	lua_register(L, "setBulletTextures", SetBulletTexturesLua);
+	lua_register(L, "setMusicFile", SetMusicFileLua);
+	lua_register(L, "setMusicVolume", SetMusicVolumeLua);
+	lua_register(L, "setVictoryValue", SetVictoryLua);
+	lua_register(L, "setDowntimeValue", SetDowntimeLua);
+	lua_register(L, "setPausetimeValue", SetPausetimeLua);
+	lua_register(L, "setQuittimeValue", SetQuittimeLua);
+	lua_register(L, "setActiveEnemiesValue", SetActiveEnemiesLua);
+}
+
+int GameScene::SetEnemySpriteLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	const char* filename = lua_tostring(L, 1);
+	game->EnemyI.loadFromFile(filename);
+	return 0;
+}
+
+int GameScene::SetBackgroundTextureLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	const char* texturename = lua_tostring(L, 1);
+	game->BackgroundI.loadFromFile(texturename);
+	game->_rect.setTexture(&game->BackgroundI);
+	return 0;
+}
+
+int GameScene::SetFontFileLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	const char* fontname = lua_tostring(L, 1);
+	game->_font.loadFromFile(fontname);
+	return 0;
+}
+
+int GameScene::SetHPTextAttributesLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	int fontSize = lua_tonumber(L, 1);
+	const char* colorStr = lua_tostring(L, 2);
+	float x = lua_tonumber(L, 3);
+	float y = lua_tonumber(L, 4);
+	game->hpText.setFont(game->_font);
+	game->hpText.setCharacterSize(fontSize);
+	game->hpText.setPosition(x, y);
+	game->hpText.setFillColor(sf::Color::White);
+	return 0;
+}
+
+int GameScene::SetVictoryCounterAttributesLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	int fontSize = lua_tonumber(L, 1);
+	const char* colorStr = lua_tostring(L, 2);
+	float x = lua_tonumber(L, 3);
+	float y = lua_tonumber(L, 4);
+	game->victoryCounter.setFont(game->_font);
+	game->victoryCounter.setCharacterSize(fontSize);
+	game->victoryCounter.setPosition(x, y);
+	game->hpText.setFillColor(sf::Color::White);
+	return 0;
+}
+
+
+int GameScene::SetBulletTexturesLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	const char* bulletPFile = lua_tostring(L, 1);
+	const char* bulletEFile = lua_tostring(L, 2);
+	game->PBulletT.loadFromFile(bulletPFile);
+	game->EBulletT.loadFromFile(bulletEFile);
+	return 0;
+}
+
+int GameScene::SetMusicFileLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	const char* musicfile = lua_tostring(L, 1);
+	game->song.openFromFile(musicfile);
+	return 0;
+}
+
+int GameScene::SetMusicVolumeLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	float volume = lua_tonumber(L, 1);
+	game->song.setVolume(volume);
+	return 0;
+}
+
+int GameScene::SetVictoryLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	int value = lua_tointeger(L, 1);
+	game->victory = value;
+	return 0;
+}
+
+int GameScene::SetDowntimeLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	float value = lua_tonumber(L, 1);
+	game->downtime = value;
+	return 0;
+}
+
+int GameScene::SetPausetimeLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	float value = lua_tonumber(L, 1);
+	game->pausetime = value;
+	return 0;
+}
+
+int GameScene::SetQuittimeLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	float value = lua_tonumber(L, 1);
+	game->quittime = value;
+	return 0;
+}
+
+int GameScene::SetActiveEnemiesLua(lua_State* L) {
+	lua_getglobal(L, "GAME");
+	GameScene* game = (GameScene*)lua_touserdata(L, -1);
+	int value = lua_tointeger(L, 1);
+	game->activeenemies = value;
+	return 0;
 }
 
 void GameScene::SpawnEnemy()
@@ -65,43 +205,17 @@ void GameScene::SpawnEnemy()
 	}
 }
 
-
-
 void GameScene::InitBG()
 {
 	_rect.setSize(sf::Vector2f(_window->getSize()));
 	_rect.setFillColor(sf::Color::Blue);
 }
 
-void GameScene::InitBGTexture()
-{
-	BackgroundI.loadFromFile("GameSceneBG.jpg");
-	_rect.setTexture(&BackgroundI);
-}
-
-void GameScene::InitFont()
-{
-	_font.loadFromFile("OptimusPrinceps.ttf");
-
-}
-
-void GameScene::InitText()
-{
-	hpText.setFont(_font);
-	hpText.setCharacterSize(60);
-	hpText.setFillColor(sf::Color::White);
-	hpText.setPosition(10, 10);
-
-	victoryCounter.setFont(_font);
-	victoryCounter.setCharacterSize(60);
-	victoryCounter.setFillColor(sf::Color::White);
-	victoryCounter.setPosition(1320, 10);
-}
 
 void GameScene::InitBullets()
 {
 	for (int i = 0; i < 30; ++i) {
-		Bullets* bullet = new Bullets(PBulletT, _player->GetPosition().x+20, _player->GetPosition().y, 40);
+		Bullets* bullet = new Bullets(PBulletT, _player->GetPosition().x + 20, _player->GetPosition().y, 40);
 		bullet->Deactivate();
 		inactivePlayerBullets.push_back(bullet);
 	}
@@ -111,32 +225,6 @@ void GameScene::InitBullets()
 		bullet->Deactivate();
 		inactiveEnemyBullets.push_back(bullet);
 	}
-}
-
-void GameScene::InitBulletT()
-{
-	PBulletT.loadFromFile("Hadouken.png");
-	EBulletT.loadFromFile("BlackHole.png");
-}
-
-void GameScene::InitMusic()
-{
-	song.openFromFile("Level.mp3");
-	song.setVolume(6);
-}
-
-void GameScene::InitLua()
-{
-	_luaReader = new LuaReader("GameSceneLua.lua");
-	lua_pushlightuserdata(this->_luaReader->getLuaState(), this);
-	lua_setglobal(this->_luaReader->getLuaState(), "GAME");
-	this->RegisterCPPFunctions(_luaReader->getLuaState());
-	this->_luaReader->LoadFile();
-}
-
-void GameScene::RegisterCPPFunctions(lua_State* L)
-{
-
 }
 
 void GameScene::AddBullet() {
@@ -160,6 +248,7 @@ void GameScene::AddBullet() {
 		}
 	}
 }
+
 
 
 void GameScene::AddPBullet() {

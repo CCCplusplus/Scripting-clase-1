@@ -16,8 +16,6 @@ function InitializeMainMenu()
     InitBGTexture()
 end
 
-
-
 function InitMusic()
     setMusicFile("Starto.mp3")
     setMusicVolume(50)
